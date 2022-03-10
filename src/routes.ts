@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouterOptions } from "vue-router";
-import { isUserAuthenticated } from "./firebase-utils";
+import { useMainStore } from "./store";
 
 const options: RouterOptions = {
   history: createWebHistory(),
@@ -36,9 +36,10 @@ const options: RouterOptions = {
 const router = createRouter(options);
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !isUserAuthenticated()) {
+  const store = useMainStore();
+  if (to.meta.requiresAuth && !store.isUserAuthenticated) {
     router.replace({ name: "login" });
-  } else if (to.meta.requiresNoAuth && isUserAuthenticated()) {
+  } else if (to.meta.requiresNoAuth && store.isUserAuthenticated) {
     router.replace({ name: "dashboard" });
   } else {
     next();
