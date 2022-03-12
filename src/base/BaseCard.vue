@@ -1,50 +1,76 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, StyleValue } from "vue";
+import { nanoid } from "nanoid";
+import { useDashboardStore } from "../store/dashboard";
 
 interface Props {
   hasTopBar?: boolean;
-  topBorderColor?: string;
-  topBorderHeight?: string;
-  leftBorderWidth?: string;
-
-  bgColor?: string;
+  topBarColor?: string;
+  topBarHeight?: string;
+  focusBarWidth?: string;
   focusColor?: string;
-  isFocused?: boolean;
+  bgColor?: string;
 }
 const props = withDefaults(defineProps<Props>(), {
   hasTopBar: false,
-  topBorderColor: "bg-[#673ab7]",
-  topBorderHeight: "h-3",
-  leftBorderWidth: "w-2",
-
-  bgColor: "bg-white",
-  focusColor: "bg-[#4285f4]",
-  isFocused: false,
+  topBarColor: "#673ab7",
+  topBarHeight: "0.625rem",
+  focusBarWidth: "0.325rem",
+  focusColor: "#4285f4",
+  bgColor: "white",
 });
 
-const leftBorderColor = computed(() =>
-  props.isFocused ? props.focusColor : props.bgColor
-);
+const id = nanoid();
+const dashboardStore = useDashboardStore();
+const isFocused = computed((): boolean => {
+  return dashboardStore.getSelectionCard === id;
+});
+
+function selectCard() {
+  dashboardStore.setSelectedCard(id);
+}
+
+// --- styles ---
+
+const topBarStyle = computed((): StyleValue => {
+  return {
+    height: props.topBarHeight,
+    backgroundColor: props.topBarColor,
+  };
+});
+
+const focusBarStyle = computed((): StyleValue => {
+  return {
+    top: props.hasTopBar ? props.topBarHeight : 0,
+    height: props.hasTopBar ? `calc(100% - ${props.topBarHeight})` : "100%",
+    width: props.focusBarWidth,
+    borderTopLeftRadius: props.hasTopBar ? "0" : "0.5rem",
+    borderBottomLeftRadius: "0.5rem",
+  };
+});
 </script>
 
 <template>
   <div
-    :class="[bgColor]"
-    class="my-3 w-full mx-auto max-w-3xl relative shadow-md overflow-hidden h-full rounded-lg"
-    @focusin="isFocused = true"
-    @focusout="isFocused = false"
+    :style="{ backgroundColor: props.bgColor }"
+    class="my-3 w-full mx-auto max-w-3xl flex relative shadow-md rounded-lg"
+    @click.prevent.stop="selectCard"
   >
     <!-- top bar -->
     <div
       v-if="hasTopBar"
-      :class="[topBorderColor, topBorderHeight]"
-      class="absolute top-0 left-0 w-full z-20 flex flex-row"
+      :style="topBarStyle"
+      class="absolute top-0 left-0 w-full flex flex-row rounded-t-lg"
     />
     <!-- left bar -->
     <div
-      class="absolute top-0 left-0 h-full z-10"
-      :class="[leftBorderColor, leftBorderWidth]"
+      class="absolute rounded-l-lg"
+      :style="[
+        focusBarStyle,
+        { backgroundColor: isFocused ? props.focusColor : props.bgColor },
+      ]"
     />
+    <!-- slot -->
     <div class="relative top-0 left-0 w-full h-full">
       <slot></slot>
     </div>
