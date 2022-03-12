@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getAuth } from "firebase/auth";
-import { reactive } from "vue";
+import { reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import BaseCard from "../base/BaseCard.vue";
 import TitleCard from "../components/TitleCard.vue";
@@ -15,6 +15,10 @@ const state = reactive({
   title: "Untitled form",
   description: "",
 });
+
+watch(state, () => {
+  console.log({ ...state });
+});
 </script>
 
 <template>
@@ -28,9 +32,11 @@ const state = reactive({
       </div>
     </nav>
     <main class="w-7/12 mx-auto mt-12 pb-12">
-      <TitleCard v-model:title="state.title"/>
+      <TitleCard
+        v-model:title="state.title"
+        v-model:description="state.description"
+      />
       <BaseCard></BaseCard>
-     
     </main>
   </div>
 </template>
