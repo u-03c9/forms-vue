@@ -1,18 +1,37 @@
 <script setup lang="ts">
 import { getAuth } from "firebase/auth";
+import { reactive } from "vue";
 import { useRouter } from "vue-router";
+import BaseCard from "../base/BaseCard.vue";
+import TitleCard from "../components/TitleCard.vue";
 
 const router = useRouter();
 function signOut() {
   getAuth().signOut();
   router.replace({ name: "home" });
 }
+
+const state = reactive({
+  title: "Untitled form",
+  description: "",
+});
 </script>
 
 <template>
-  <div>
-    <h1 class="text-3xl font-bold underline">Dashboard Page</h1>
-    <button @click="signOut">sign out</button>
+  <div class="bg-[#f0ebf8]">
+    <nav class="w-full flex flex-row justify-between px-2 py-2 bg-white">
+      <div>
+        <span>forms-vue</span>
+      </div>
+      <div>
+        <button @click="signOut">sign out</button>
+      </div>
+    </nav>
+    <main class="w-7/12 mx-auto mt-12 pb-12">
+      <TitleCard v-model:title="state.title"/>
+      <BaseCard></BaseCard>
+     
+    </main>
   </div>
 </template>
 
