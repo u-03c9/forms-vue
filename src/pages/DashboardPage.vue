@@ -2,8 +2,8 @@
 import { getAuth } from "firebase/auth";
 import { reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import BaseCard from "../base/BaseCard.vue";
 import TitleCard from "../components/TitleCard.vue";
+import QuestionCard from "../components/QuestionCard.vue";
 
 const router = useRouter();
 function signOut() {
@@ -31,12 +31,14 @@ watch(state, () => {
         <button @click="signOut">sign out</button>
       </div>
     </nav>
-    <main class="w-7/12 mx-auto mt-12 pb-12">
-      <TitleCard
-        v-model:title="state.title"
-        v-model:description="state.description"
-      />
-      <BaseCard></BaseCard>
+    <main class="w-full mx-auto mt-12 pb-12">
+      <form>
+        <TitleCard
+          v-model:title="state.title"
+          v-model:description="state.description"
+        />
+        <QuestionCard />
+      </form>
     </main>
   </div>
 </template>
