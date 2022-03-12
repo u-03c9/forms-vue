@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive } from "vue";
+import { computed } from "vue";
 
 interface Props {
   hasTopBar?: boolean;
@@ -22,12 +22,6 @@ const props = withDefaults(defineProps<Props>(), {
   isFocused: false,
 });
 
-const emit = defineEmits(["update:isFocused"]);
-
-// const state = reactive({
-//   isFocused: false,
-// });
-
 const leftBorderColor = computed(() =>
   props.isFocused ? props.focusColor : props.bgColor
 );
@@ -37,6 +31,8 @@ const leftBorderColor = computed(() =>
   <div
     :class="[bgColor]"
     class="my-3 w-full mx-auto max-w-3xl relative shadow-md overflow-hidden h-full rounded-lg"
+    @focusin="isFocused = true"
+    @focusout="isFocused = false"
   >
     <!-- top bar -->
     <div
