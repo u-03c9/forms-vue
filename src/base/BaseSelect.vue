@@ -47,7 +47,7 @@ function select(id: any) {
         <span class="material-icons">
           {{ getSelectedOption().icon }}
         </span>
-        <span class="text-sm self-center">
+        <span class="text-sm pt-[0.125rem]">
           {{ getSelectedOption().name }}
         </span>
       </div>
