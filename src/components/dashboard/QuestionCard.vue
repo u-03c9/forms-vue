@@ -7,11 +7,16 @@ import BaseCard from "../../base/BaseCard.vue";
 import BaseSelect from "../../base/BaseSelect.vue";
 import BaseTextArea from "../../base/BaseTextArea.vue";
 
+import QuestionChoice from "./questions_types/QuestionChoice.vue";
+import QuestionCheck from "./questions_types/QuestionCheck.vue";
+import QuestionDrop from "./questions_types/QuestionDrop.vue";
+
 const dashboardStore = useDashboardStore();
 const id = nanoid();
 const isCardSelected = computed(() => dashboardStore.checkIsSelected(id));
 
 const state = reactive({
+  questionHeader: "",
   selectedQuestionType: "choice",
   questionTypes: [
     {
@@ -39,6 +44,7 @@ const state = reactive({
       <div class="px-6 py-3">
         <header class="w-full flex flex-row gap-3">
           <BaseTextArea
+            v-model="state.questionHeader"
             :inSelectedCard="isCardSelected"
             placeholder="Question"
           />
@@ -48,6 +54,18 @@ const state = reactive({
             v-model:selectedOption="state.selectedQuestionType"
           />
         </header>
+        <QuestionChoice
+          v-if="state.selectedQuestionType === 'choice'"
+          :inSelectedCard="isCardSelected"
+        />
+        <QuestionCheck
+          v-else-if="state.selectedQuestionType === 'check'"
+          :inSelectedCard="isCardSelected"
+        />
+        <QuestionDrop
+          v-else-if="state.selectedQuestionType === 'drop'"
+          :inSelectedCard="isCardSelected"
+        />
       </div>
     </template>
   </BaseCard>
