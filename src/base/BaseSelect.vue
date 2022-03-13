@@ -1,38 +1,26 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 
+const props = defineProps<{
+  selectedOption: string;
+  options: { id: string; name: string; icon: string }[];
+}>();
+const emit = defineEmits(["update:selectedOption"]);
+
 const state = reactive({
   isMenuOpen: false,
-  selectedOption: "choice",
-  options: [
-    {
-      id: "choice",
-      name: "Multiple choice",
-      icon: "radio_button_checked",
-    },
-    {
-      id: "check",
-      name: "Checkboxes",
-      icon: "check_box",
-    },
-    {
-      id: "drop",
-      name: "Dropdown",
-      icon: "expand_circle_down",
-    },
-  ],
 });
 
 function getSelectedOption() {
   return (
-    state.options.find(({ id }) => id === state.selectedOption) ??
-    state.options[0]
+    props.options.find(({ id }) => id === props.selectedOption) ??
+    props.options[0]
   );
 }
 
 function select(id: any) {
-  state.selectedOption = id;
   state.isMenuOpen = false;
+  emit("update:selectedOption", id);
 }
 </script>
 
@@ -60,7 +48,7 @@ function select(id: any) {
       v-show="state.isMenuOpen"
     >
       <div
-        v-for="{ id, name, icon } in state.options"
+        v-for="{ id, name, icon } in props.options"
         @click="select(id)"
         class="flex flex-row gap-3 p-3 hover:bg-gray-100 cursor-pointer"
       >
