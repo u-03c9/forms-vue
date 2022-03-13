@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { nanoid } from "nanoid";
 import BaseCard from "../base/BaseCard.vue";
 import BaseSelect from "../base/BaseSelect.vue";
 </script>
 
 <template>
-  <BaseCard>
+  <BaseCard :id="nanoid()">
     <template v-slot>
       <div class="px-6 py-3">
         <header class="w-full flex flex-row gap-3">

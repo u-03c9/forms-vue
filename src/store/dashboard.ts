@@ -6,14 +6,13 @@ export const useDashboardStore = defineStore("dashboard", {
       selectedCard: "",
     };
   },
-  getters: {
-    getSelectionCard(): string {
-      return this.selectedCard;
-    },
-  },
+  getters: {},
   actions: {
     setSelectedCard(value: string) {
       this.selectedCard = value;
+    },
+    checkIsSelected(cardId: string): boolean {
+      return this.selectedCard === cardId;
     },
   },
 });

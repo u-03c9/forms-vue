@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, StyleValue } from "vue";
-import { nanoid } from "nanoid";
 import { useDashboardStore } from "../store/dashboard";
 
+const dashboardStore = useDashboardStore();
+
 interface Props {
+  id: string;
   hasTopBar?: boolean;
   topBarColor?: string;
   topBarHeight?: string;
@@ -19,16 +21,6 @@ const props = withDefaults(defineProps<Props>(), {
   focusColor: "#4285f4",
   bgColor: "white",
 });
-
-const id = nanoid();
-const dashboardStore = useDashboardStore();
-const isFocused = computed((): boolean => {
-  return dashboardStore.getSelectionCard === id;
-});
-
-function selectCard() {
-  dashboardStore.setSelectedCard(id);
-}
 
 // --- styles ---
 
@@ -54,7 +46,7 @@ const focusBarStyle = computed((): StyleValue => {
   <div
     :style="{ backgroundColor: props.bgColor }"
     class="my-3 w-full mx-auto max-w-3xl flex relative shadow-md rounded-lg"
-    @click.prevent.stop="selectCard"
+    @click.prevent.stop="dashboardStore.setSelectedCard(id)"
   >
     <!-- top bar -->
     <div
@@ -67,7 +59,11 @@ const focusBarStyle = computed((): StyleValue => {
       class="absolute rounded-l-lg"
       :style="[
         focusBarStyle,
-        { backgroundColor: isFocused ? props.focusColor : props.bgColor },
+        {
+          backgroundColor: dashboardStore.checkIsSelected(props.id)
+            ? props.focusColor
+            : props.bgColor,
+        },
       ]"
     />
     <!-- slot -->
