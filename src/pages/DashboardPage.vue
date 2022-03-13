@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { getAuth } from "firebase/auth";
-import { reactive, ref, watch } from "vue";
+import { reactive, watch } from "vue";
 import { useRouter } from "vue-router";
-import TitleCard from "../components/TitleCard.vue";
-import QuestionCard from "../components/QuestionCard.vue";
+import TitleCard from "../components/dashboard/TitleCard.vue";
+import QuestionCard from "../components/dashboard/QuestionCard.vue";
 
 const router = useRouter();
 function signOut() {
@@ -22,7 +22,7 @@ watch(state, () => {
 </script>
 
 <template>
-  <div class="bg-[#f0ebf8]">
+  <div class="bg-primary-light">
     <nav class="w-full flex flex-row justify-between px-2 py-2 bg-white">
       <div>
         <span>forms-vue</span>

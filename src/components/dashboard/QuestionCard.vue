@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nanoid } from "nanoid";
-import BaseCard from "../base/BaseCard.vue";
-import BaseSelect from "../base/BaseSelect.vue";
+import BaseCard from "../../base/BaseCard.vue";
+import BaseSelect from "../../base/BaseSelect.vue";
 </script>
 
 <template>
