@@ -22,6 +22,7 @@ defineEmits(["update:title", "update:description"]);
           class="w-full pb-2 text-3xl"
           :inSelectedCard="isCardSelected"
           :value="title"
+          :showBar="true"
           @input="$emit('update:title', ($event.target as HTMLInputElement).value)"
         />
         <BaseTextInput
@@ -29,6 +30,7 @@ defineEmits(["update:title", "update:description"]);
           class="w-full pb-1 text-md mt-3"
           :inSelectedCard="isCardSelected"
           :value="description"
+          :showBar="true"
           @input="$emit('update:description', ($event.target as HTMLInputElement).value)"
         />
       </div>
