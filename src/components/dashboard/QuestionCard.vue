@@ -1,20 +1,27 @@
 <script setup lang="ts">
 import { nanoid } from "nanoid";
+import { computed } from "vue";
+
+import { useDashboardStore } from "../../store/dashboard";
 import BaseCard from "../../base/BaseCard.vue";
 import BaseSelect from "../../base/BaseSelect.vue";
+import BaseTextArea from "../../base/BaseTextArea.vue";
+
+const dashboardStore = useDashboardStore();
+const id = nanoid();
+const isCardSelected = computed(() => dashboardStore.checkIsSelected(id));
 </script>
 
 <template>
-  <BaseCard :id="nanoid()">
+  <BaseCard :id="id">
     <template v-slot>
       <div class="px-6 py-3">
         <header class="w-full flex flex-row gap-3">
-          <input
-            type="text"
+          <BaseTextArea
+            :inSelectedCard="isCardSelected"
             placeholder="Question"
-            class="bg-gray-100 outline-none border-b-[1px] border-gray-400 py-0 px-4 flex-grow rounded-t-lg focus:border-[#673ab7]"
           />
-          <BaseSelect />
+          <BaseSelect v-show="isCardSelected" />
         </header>
       </div>
     </template>
