@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { nanoid } from "nanoid";
 import { computed, reactive } from "vue";
 
-import { useDashboardStore } from "../../store/dashboard";
+import { useDashboardStore, Question } from "../../store/dashboard";
+
 import BaseCard from "../../base/BaseCard.vue";
 import BaseSelect from "../../base/BaseSelect.vue";
 import BaseTextArea from "../../base/BaseTextArea.vue";
@@ -11,59 +11,48 @@ import QuestionChoice from "./questions_types/QuestionChoice.vue";
 import QuestionCheck from "./questions_types/QuestionCheck.vue";
 import QuestionDrop from "./questions_types/QuestionDrop.vue";
 
+const props = defineProps(["questionId"]);
 const dashboardStore = useDashboardStore();
-const id = nanoid();
-const isCardSelected = computed(() => dashboardStore.checkIsSelected(id));
 
-const state = reactive({
-  questionHeader: "",
-  selectedQuestionType: "choice",
-  questionTypes: [
-    {
-      id: "choice",
-      name: "Multiple choice",
-      icon: "radio_button_checked",
-    },
-    {
-      id: "check",
-      name: "Checkboxes",
-      icon: "check_box",
-    },
-    {
-      id: "drop",
-      name: "Dropdown",
-      icon: "expand_circle_down",
-    },
-  ],
-});
+const question: Question = reactive(
+  dashboardStore.getQuestionById(props.questionId)
+);
+const isCardSelected = computed(() =>
+  dashboardStore.checkIsSelected(props.questionId)
+);
 </script>
 
 <template>
-  <BaseCard :id="id">
+  <BaseCard :id="questionId">
     <template v-slot>
-      <div class="px-6 py-3">
+      <div class="mx-6 my-3">
         <header class="w-full flex flex-row gap-3">
           <BaseTextArea
-            v-model="state.questionHeader"
+            v-model="question.header"
             :inSelectedCard="isCardSelected"
             placeholder="Question"
           />
           <BaseSelect
             v-show="isCardSelected"
-            :options="state.questionTypes"
-            v-model:selectedOption="state.selectedQuestionType"
+            :options="dashboardStore.questionTypes"
+            v-model:selectedOption="question.type"
           />
         </header>
+      </div>
+      <div class="mr-6 mb-6">
         <QuestionChoice
-          v-if="state.selectedQuestionType === 'choice'"
+          :questionId="questionId"
+          v-if="question.type === 'choice'"
           :inSelectedCard="isCardSelected"
         />
         <QuestionCheck
-          v-else-if="state.selectedQuestionType === 'check'"
+          :questionId="questionId"
+          v-else-if="question.type === 'check'"
           :inSelectedCard="isCardSelected"
         />
         <QuestionDrop
-          v-else-if="state.selectedQuestionType === 'drop'"
+          :questionId="questionId"
+          v-else-if="question.type === 'drop'"
           :inSelectedCard="isCardSelected"
         />
       </div>

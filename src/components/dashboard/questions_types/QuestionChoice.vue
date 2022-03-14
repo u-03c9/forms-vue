@@ -1,36 +1,82 @@
 <script setup lang="ts">
-import { computed, reactive } from "vue";
+import { computed } from "vue";
 
 import { useDashboardStore } from "../../../store/dashboard";
 
-import BaseCard from "../../base/BaseCard.vue";
-import BaseSelect from "../../base/BaseSelect.vue";
-import BaseTextArea from "../../base/BaseTextArea.vue";
-import BaseTextInput from "../../../base/BaseTextInput.vue";
 import AnswerItem from "../AnswerItem.vue";
 
-const props = defineProps(["inSelectedCard", "modelValue"]);
+const props = defineProps(["inSelectedCard", "modelValue", "questionId"]);
 const emit = defineEmits(["update:modelValue"]);
 const dashboardStore = useDashboardStore();
-const state = reactive({
-  answers: ["Option 1", "Option 2", "Option 3"],
-});
 
-function addOption() {
-  state.answers.push(`Option ${state.answers.length + 1}`);
+const answers = computed(() => dashboardStore.getAllAnswers(props.questionId));
+
+const addOption = () =>
+  dashboardStore.addAnswer(
+    props.questionId,
+    `Option ${answers.value.length + 1}`
+  );
+
+if (answers.value.length === 0) addOption();
+
+const deleteOption = (id: string) =>
+  dashboardStore.deleteAnswer(props.questionId, id);
+
+function startDrag(event: DragEvent, item: { id: string; value: string }) {
+  event.dataTransfer!.dropEffect = "move";
+  event.dataTransfer!.effectAllowed = "move";
+  event.dataTransfer!.setData("itemId", item.id);
+}
+
+function onDrop(event: DragEvent) {
+  const itemId = event.dataTransfer!.getData("itemId");
+  const parent = (event.target as HTMLElement).closest(".answers-container");
+  const closestItemIndex = findClosestItemIndex(parent!, event.clientY);
+
+  dashboardStore.dropAnswerBefore(props.questionId, closestItemIndex, itemId);
+}
+
+function findClosestItemIndex(parent: Element, clientY: number) {
+  const calcDist = (el: Element) => {
+    const { top, height } = el.getBoundingClientRect();
+    return clientY - top - height / 2;
+  };
+
+  const closest = [...parent.children].reduce(
+    (prevEl, currentEl, currentIndex) => {
+      const offset = calcDist(currentEl);
+      if (offset < 0 && prevEl.offset < offset) {
+        return { offset, index: currentIndex };
+      }
+      return prevEl;
+    },
+    { offset: Number.NEGATIVE_INFINITY, index: -1 }
+  );
+
+  return closest.index;
 }
 </script>
 
 <template>
-  <div class="w-full flex flex-col gap-4 pt-4">
-    <AnswerItem
-      v-for="(answer, idx) in state.answers"
-      :inSelectedCard="inSelectedCard"
-      v-model="state.answers[idx]"
-      @deleteOption="state.answers.splice(idx, 1)"
-    />
-    <div v-show="inSelectedCard" class="w-full flex flex-row text-sm">
-      <span class="material-icons text-gray-400 mr-3 h-5 w-5">
+  <div class="w-full ml-1">
+    <div
+      class="w-full flex flex-col gap-y-3 pt-4 answers-container"
+      @dragenter.prevent=""
+      @dragover.prevent=""
+      @drop.prevent="onDrop"
+    >
+      <AnswerItem
+        v-for="answer in answers"
+        v-model="answer.value"
+        :id="answer.id"
+        :key="answer.id"
+        :inSelectedCard="inSelectedCard"
+        @deleteOption="deleteOption(answer.id)"
+        @dragstart="startDrag($event, answer)"
+      />
+    </div>
+    <div v-show="inSelectedCard" class="w-full flex flex-row text-sm mt-3">
+      <span class="material-icons text-gray-400 ml-[1.35rem] mr-3 h-5 w-5">
         radio_button_unchecked
       </span>
       <span

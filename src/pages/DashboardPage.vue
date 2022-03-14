@@ -2,23 +2,20 @@
 import { getAuth } from "firebase/auth";
 import { reactive, watch } from "vue";
 import { useRouter } from "vue-router";
+
 import TitleCard from "../components/dashboard/TitleCard.vue";
 import QuestionCard from "../components/dashboard/QuestionCard.vue";
+import { useDashboardStore } from "../store/dashboard";
+
+const dashboardStore = useDashboardStore();
+const questions = reactive(dashboardStore.questions);
+if (questions.values.length === 0) dashboardStore.addNewQuestion();
 
 const router = useRouter();
 function signOut() {
   getAuth().signOut();
   router.replace({ name: "home" });
 }
-
-const state = reactive({
-  title: "Untitled form",
-  description: "",
-});
-
-watch(state, () => {
-  console.log({ ...state });
-});
 </script>
 
 <template>
@@ -34,10 +31,10 @@ watch(state, () => {
     <main class="w-full mx-auto mt-12 pb-12">
       <form>
         <TitleCard
-          v-model:title="state.title"
-          v-model:description="state.description"
+          v-model:title="dashboardStore.title"
+          v-model:description="dashboardStore.description"
         />
-        <QuestionCard />
+        <QuestionCard v-for="{ id } in questions" :questionId="id" :key="id" />
       </form>
     </main>
   </div>
