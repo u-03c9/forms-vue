@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, watch } from "vue";
+import { onMounted, onUnmounted, reactive, ref, watch } from "vue";
 import { useDashboardStore } from "../../store/dashboard";
 
 const dashboardStore = useDashboardStore();
@@ -8,9 +8,17 @@ const questionTypes = reactive(dashboardStore.questionTypes);
 
 const position = reactive({ top: "0", left: "revert", right: "0" });
 
+const windowWidth = ref(window.innerWidth);
+const updateWidth = () => (windowWidth.value = window.innerWidth);
+onMounted(() => window.addEventListener("resize", updateWidth));
+onUnmounted(() => window.removeEventListener("resize", updateWidth));
+
 watch(
-  () => dashboardStore.selectedCardEl,
-  async (cardEl) => {
+  () => ({
+    cardEl: dashboardStore.selectedCardEl,
+    windowWidth: windowWidth.value,
+  }),
+  async ({ cardEl }) => {
     if (!cardEl) return;
 
     setTimeout(() => {
