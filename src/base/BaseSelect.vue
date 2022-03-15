@@ -18,14 +18,15 @@ function getSelectedOption() {
   );
 }
 
-function select(id: any) {
-  state.isMenuOpen = false;
-  emit("update:selectedOption", id);
+function handleFocusOut() {
+  setTimeout(() => {
+    state.isMenuOpen = false;
+  }, 100);
 }
 </script>
 
 <template>
-  <div class="w-56 relative overflow-visible">
+  <div class="w-56 relative overflow-visible" @focusout="handleFocusOut">
     <button
       @click="state.isMenuOpen = !state.isMenuOpen"
       class="flex flex-row justify-between border-gray-200 rounded-md border-[1px] px-2 pt-3 pb-2 w-full text-gray-600"
@@ -44,12 +45,12 @@ function select(id: any) {
       </div>
     </button>
     <div
-      class="absolute left-0 top-14 w-full bg-white shadow-lg text-gray-600"
+      class="absolute left-0 top-14 w-full bg-white shadow-lg text-gray-600 z-50"
       v-show="state.isMenuOpen"
     >
       <div
         v-for="{ id, name, icon } in props.options"
-        @click="select(id)"
+        @click="$emit('update:selectedOption', id)"
         class="flex flex-row gap-3 p-3 hover:bg-gray-100 cursor-pointer"
       >
         <span class="material-icons"> {{ icon }} </span>

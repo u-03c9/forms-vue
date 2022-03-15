@@ -26,9 +26,10 @@ function handleInput(event: Event) {
   expandHeight();
 }
 
-function focusOnTextArea() {
-  // TODO: not working correctly, should look at it later.
-  textArea.value?.focus();
+async function focusOnTextArea() {
+  setTimeout(() => {
+    textArea.value?.focus();
+  });
 }
 </script>
 
