@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { nanoid } from "nanoid";
 import { computed } from "vue";
 
 import BaseCard from "../../base/BaseCard.vue";
 import { useDashboardStore } from "../../store/dashboard";
 import BaseTextInput from "../../base/BaseTextInput.vue";
 
-const dashboardStore = useDashboardStore();
-const id = nanoid();
-const isCardSelected = computed(() => dashboardStore.checkIsSelected(id));
-
-defineProps(["title", "description"]);
+const props = defineProps(["cardId", "title", "description"]);
 defineEmits(["update:title", "update:description"]);
+
+const dashboardStore = useDashboardStore();
+const isCardSelected = computed(() =>
+  dashboardStore.checkIsSelected(props.cardId)
+);
+
 </script>
 
 <template>
-  <BaseCard :id="id" hasTopBar>
+  <BaseCard :cardId="cardId" hasTopBar>
     <template v-slot>
       <div class="w-full h-full pt-8 pb-6 px-6">
         <BaseTextInput

@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import { defineStore } from "pinia";
+import { ref, Ref } from "vue";
 
 export interface Question {
   id: string;
@@ -20,9 +21,11 @@ interface QuestionType {
 }
 
 export interface Dashboard {
+  formId: string;
   title: string;
   description: string;
   selectedCard: string;
+  selectedCardEl: Ref<InstanceType<typeof HTMLElement> | null>;
   questions: Question[];
   questionTypes: QuestionType[];
 }
@@ -30,9 +33,11 @@ export interface Dashboard {
 export const useDashboardStore = defineStore("dashboard", {
   state: (): Dashboard => {
     return {
+      formId: nanoid(),
       title: "Untitled form",
       description: "",
       selectedCard: "",
+      selectedCardEl: ref(null),
       questions: [],
       questionTypes: [
         {
@@ -57,6 +62,7 @@ export const useDashboardStore = defineStore("dashboard", {
   actions: {
     setSelectedCard(value: string) {
       this.selectedCard = value;
+      this.selectedCardEl = document.getElementById(value);
     },
     checkIsSelected(cardId: string): boolean {
       return this.selectedCard === cardId;

@@ -23,7 +23,7 @@ const isCardSelected = computed(() =>
 </script>
 
 <template>
-  <BaseCard :id="questionId">
+  <BaseCard :cardId="questionId">
     <template v-slot>
       <div class="mx-6 my-3">
         <header class="w-full flex flex-row gap-3">

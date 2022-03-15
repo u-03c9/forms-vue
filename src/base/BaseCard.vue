@@ -5,7 +5,7 @@ import { useDashboardStore } from "../store/dashboard";
 const dashboardStore = useDashboardStore();
 
 interface Props {
-  id: string;
+  cardId: string;
   hasTopBar?: boolean;
   topBarColor?: string;
   topBarHeight?: string;
@@ -44,9 +44,10 @@ const focusBarStyle = computed((): StyleValue => {
 
 <template>
   <div
+    :id="cardId"
     :style="{ backgroundColor: props.bgColor }"
     class="my-3 w-full mx-auto max-w-3xl flex relative shadow-md rounded-lg"
-    @click.prevent.stop="dashboardStore.setSelectedCard(id)"
+    @click.prevent.stop="dashboardStore.setSelectedCard(cardId)"
   >
     <!-- top bar -->
     <div
@@ -60,7 +61,7 @@ const focusBarStyle = computed((): StyleValue => {
       :style="[
         focusBarStyle,
         {
-          backgroundColor: dashboardStore.checkIsSelected(props.id)
+          backgroundColor: dashboardStore.checkIsSelected(props.cardId)
             ? props.focusColor
             : props.bgColor,
         },
